@@ -1,14 +1,18 @@
-# Contributing to the Non-Fungible Token Standard
+# Contributing to Batched EVM Exec Example
 
-The following is a set of guidelines for contributing to the Flow NFT standard. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to the Batched EVM Exec Example repo. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
 
 #### Table Of Contents
 
 [How Can I Contribute?](#how-can-i-contribute)
 
-- [Reporting Bugs](#reporting-bugs)
-- [Suggesting Enhancements](#suggesting-enhancements)
-- [Pull Requests](#pull-requests)
+- [How Can I Contribute?](#how-can-i-contribute)
+  - [Reporting Bugs](#reporting-bugs)
+  - [Suggesting Enhancements](#suggesting-enhancements)
+  - [Pull Requests](#pull-requests)
+- [Styleguides](#styleguides)
+  - [Git Commit Messages](#git-commit-messages)
+  - [Additional Notes](#additional-notes)
 
 [Styleguides](#styleguides)
 
