@@ -1,7 +1,7 @@
 pragma solidity 0.8.24;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
@@ -9,36 +9,38 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
  * @dev Mint ERC721 tokens for a fee in ERC20 tokens
  */
 contract MaybeMintERC721 is ERC721, Ownable {
-    ERC20 public denomination;
+    IERC20 public denomination;
     uint256 public mintCost;
     address beneficiary;
+    uint256 public totalSupply;
 
     event MintCostUpdated(uint256 newCost);
     event BeneficiaryUpdated(address indexed newBeneficiary);
-    event DenominationUpdated(address indexed newDenomination, string name, string symbol);
+    event DenominationUpdated(address indexed newDenomination);
 
     constructor(string memory _name, string memory _symbol, address _erc20, uint256 _mintCost, address _beneficiary)
         ERC721(_name, _symbol)
         Ownable(msg.sender)
     {
-        denomination = ERC20(_erc20);
+        denomination = IERC20(_erc20);
         mintCost = _mintCost;
         beneficiary = _beneficiary;
+        totalSupply = 0;
 
         emit MintCostUpdated(_mintCost);
         emit BeneficiaryUpdated(_beneficiary);
-        emit DenominationUpdated(_erc20, denomination.name(), denomination.symbol());
+        emit DenominationUpdated(_erc20);
     }
 
     /**
-     * @dev Mint a new ERC721 token. This contract must be approved to transfer mintCost amount from the caller
+     * @dev Mint a new ERC721 token to the caller. This contract must be approved to transfer mintCost amount from the caller
      *      before minting the ERC721 to pay for mint
-     * @param to The address to mint the token to
      */
-    function mint(address to, uint256 tokenId) external {
+    function mint() external {
         // TODO: Get a random number to determine if the mint is successful
-        denomination.transferFrom(msg.sender, beneficiary, mintCost);
-        _mint(to, tokenId);
+        totalSupply++; // increment the total supply
+        denomination.transferFrom(msg.sender, beneficiary, mintCost); // take payment for mint
+        _mint(msg.sender, totalSupply); // mint the token, assigning the next tokenId
     }
 
     /**
@@ -57,8 +59,8 @@ contract MaybeMintERC721 is ERC721, Ownable {
     function setDenomination(address _denomination) external onlyOwner {
         require(_denomination != address(0), "Denomination cannot be the zero address");
 
-        denomination = ERC20(_denomination);
-        emit DenominationUpdated(_denomination, denomination.name(), denomination.symbol());
+        denomination = IERC20(_denomination);
+        emit DenominationUpdated(_denomination);
     }
 
     /**
