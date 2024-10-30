@@ -16,10 +16,6 @@ contract MaybeMintERC721 is ERC721, Ownable {
     address public beneficiary;
     uint256 public totalSupply;
 
-    event MintCostUpdated(uint256 newCost);
-    event BeneficiaryUpdated(address indexed newBeneficiary);
-    event DenominationUpdated(address indexed newDenomination);
-
     constructor(string memory _name, string memory _symbol, address _erc20, uint256 _mintCost, address _beneficiary)
         ERC721(_name, _symbol)
         Ownable(msg.sender)
@@ -28,10 +24,6 @@ contract MaybeMintERC721 is ERC721, Ownable {
         mintCost = _mintCost;
         beneficiary = _beneficiary;
         totalSupply = 0;
-
-        emit MintCostUpdated(_mintCost);
-        emit BeneficiaryUpdated(_beneficiary);
-        emit DenominationUpdated(_erc20);
     }
 
     /**
@@ -49,34 +41,5 @@ contract MaybeMintERC721 is ERC721, Ownable {
         totalSupply++; // increment the total supply
         denomination.transferFrom(msg.sender, beneficiary, mintCost); // take payment for mint
         _mint(msg.sender, totalSupply); // mint the token, assigning the next tokenId
-    }
-
-    /**
-     * @dev Set the cost to mint a new ERC721 token
-     * @param _mintCost The new cost to mint a token in the denomination IERC20 token
-     */
-    function setMintCost(uint256 _mintCost) external onlyOwner {
-        mintCost = _mintCost;
-        emit MintCostUpdated(_mintCost);
-    }
-
-    /**
-     * @dev Set the IERC20 contract to use as the denomination
-     * @param _denomination The IERC20 contract address to use as the denomination for mint fee
-     */
-    function setDenomination(address _denomination) external onlyOwner {
-        require(_denomination != address(0), "Denomination cannot be the zero address");
-
-        denomination = IERC20(_denomination);
-        emit DenominationUpdated(_denomination);
-    }
-
-    /**
-     * @dev Set the address to receive the IERC20 token paid for minting fees
-     * @param _beneficiary The address to receive the minting fees
-     */
-    function setBeneficiary(address _beneficiary) external onlyOwner {
-        beneficiary = _beneficiary;
-        emit BeneficiaryUpdated(_beneficiary);
     }
 }
