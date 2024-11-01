@@ -3,8 +3,7 @@ pragma solidity 0.8.24;
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {CadenceArchUtils} from "./CadenceArchUtils.sol";
-// import {CadenceArchUtils} from "onflow/random-coin-toss/solidity/src/CadenceArchUtils.sol";
+import {CadenceArchUtils} from "onflow/random-coin-toss/solidity/src/CadenceArchUtils.sol";
 
 /**
  * @title MaybeMintERC721
