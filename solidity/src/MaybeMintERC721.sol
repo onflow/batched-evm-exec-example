@@ -17,6 +17,9 @@ contract MaybeMintERC721 is ERC721, Ownable {
     address public beneficiary;
     uint256 public totalSupply;
 
+    error RandomRevert();
+    error InsufficientAllowance(address denomination, address sender, uint256 needed);
+
     constructor(string memory _name, string memory _symbol, address _erc20, uint256 _mintCost, address _beneficiary)
         ERC721(_name, _symbol)
         Ownable(msg.sender)
@@ -49,10 +52,14 @@ contract MaybeMintERC721 is ERC721, Ownable {
     function _maybeMint() internal {
         _splitChanceRevert(); // randomly revert with 50% chance
 
-        totalSupply++; // increment the total supply
-        denomination.transferFrom(msg.sender, beneficiary, mintCost); // take payment for mint
-        _mint(msg.sender, totalSupply); // mint the token, assigning the next tokenId
-            // TODO: Set token URI
+        // take payment for mint
+        try denomination.transferFrom(msg.sender, beneficiary, mintCost) {
+            totalSupply++; // increment the total supply
+            _mint(msg.sender, totalSupply); // mint the token, assigning the next tokenId
+                // TODO: Set token URI
+        } catch {
+            revert InsufficientAllowance(address(denomination), msg.sender, mintCost);
+        }
     }
 
     /**
@@ -60,6 +67,8 @@ contract MaybeMintERC721 is ERC721, Ownable {
      */
     function _splitChanceRevert() internal view {
         uint64 random = CadenceArchUtils._revertibleRandom();
-        require(random % 2 == 0, "No mint for you!");
+        if (random % 2 == 1) {
+            revert RandomRevert();
+        }
     }
 }
