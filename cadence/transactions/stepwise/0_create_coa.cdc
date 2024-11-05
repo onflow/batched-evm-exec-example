@@ -2,7 +2,10 @@ import "FungibleToken"
 import "FlowToken"
 import "EVM"
 
-/// Creates a CadenceOwnedAccount & funds with the specified amount. If the COA already exists, the transaction reverts.
+/// Creates a CadenceOwnedAccount (COA) & funds with the specified amount.
+/// If a COA already exists in storage at /storage/evm, the transaction reverts.
+///
+/// @param amount: The amount of FLOW to fund the COA with, sourcing funds from the signer's FlowToken Vault
 ///
 transaction(amount: UFix64) {
     

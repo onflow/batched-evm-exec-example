@@ -2,8 +2,14 @@ import "FungibleToken"
 import "FlowToken"
 import "EVM"
 
-/// This transaction wraps FLOW as WFLOW, approves an ERC721 contract to move the mint amount, and attempts to mint an
-/// ERC721 token. The transaction is reverted if any of the EVM interactions fail
+/// This transaction approves the provided ERC721 address to move the mint amount on the WFLOW contract. In this example
+/// the mint amount is 1.0 WFLOW. While not included in the code below, this transaction is part of a larger example
+/// showcasing how Cadence can be used to atomically orchestrate multiple EVM interactions in a single transaction.
+///
+/// For more context, see https://github.com/onflow/batched-evm-exec-example
+///
+/// @param wflowAddressHex: The EVM address hex of the WFLOW contract as a String
+/// @param maybeMintERC721AddressHex: The EVM address hex of the ERC721 contract as a String
 ///
 transaction(wflowAddressHex: String, maybeMintERC721AddressHex: String) {
     

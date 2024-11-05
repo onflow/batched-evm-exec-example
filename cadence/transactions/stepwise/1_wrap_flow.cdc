@@ -2,7 +2,16 @@ import "FungibleToken"
 import "FlowToken"
 import "EVM"
 
-/// This transaction wraps FLOW as WFLOW, funing the signer's CadenceOwnedAccount with the mint cost
+/// This transaction wraps FLOW as WFLOW, sourcing the wrapped FLOW from the signer's FlowToken Vault in the amount of
+/// 1.0 FLOW to cover the mint cost of 1 MaybeMintERC721 token. If a CadenceOwnedAccount (COA) is not configured in the
+/// signer's account, one is configured, allowing the Flow account to interact with Flow's EVM runtime.
+///
+/// While not interesting on its own, this transaction demonstrates a single step in the bundled EVM execution example,
+/// showcasing how Cadence can be used to atomically orchestrate multiple EVM interactions in a single transaction.
+///
+/// For more context, see https://github.com/onflow/batched-evm-exec-example
+/// 
+/// @param wflowAddressHex: The EVM address hex of the WFLOW contract as a String
 ///
 transaction(wflowAddressHex: String) {
     
