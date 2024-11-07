@@ -56,7 +56,7 @@ contract MaybeMintERC721Test is Test {
         vm.mockCall(cadenceArch, abi.encodeWithSignature("revertibleRandom()"), abi.encode(uint64(3)));
 
         vm.prank(user);
-        vm.expectRevert("No mint for you!");
+        vm.expectRevert(bytes4(keccak256("RandomRevert()")));
         erc721.mint(); // Attempt to mint ERC721 to user - should revert
     }
 
@@ -64,8 +64,9 @@ contract MaybeMintERC721Test is Test {
         // Mock the Cadence Arch precompile for revertibleRandom() call, returning 0 - allows mint
         vm.mockCall(cadenceArch, abi.encodeWithSignature("revertibleRandom()"), abi.encode(uint64(0)));
 
+        bytes4 errSelector = bytes4(keccak256("InsufficientAllowance(address,address,uint256)"));
         vm.prank(user);
-        vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSelector(errSelector, address(erc20), user, mintCost));
         erc721.mint(); // Attempt to mint ERC721 to user - reverts as user has not approved ERC20
     }
 }
