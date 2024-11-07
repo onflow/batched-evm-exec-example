@@ -3,6 +3,7 @@ pragma solidity 0.8.24;
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {CadenceArchUtils} from "flow-sol-utils/cadence-arch/CadenceArchUtils.sol";
 
 /**
  * @title MaybeMintERC721
@@ -36,10 +37,29 @@ contract MaybeMintERC721 is ERC721, Ownable {
      *      to the beneficiary before minting the ERC721 to pay for mint
      */
     function mint() external {
-        // TODO: Get a random number to determine if the mint is successful
-        // TODO: Set token URI
+        // Randomly fail mint with 50% chance of reverting
+        _maybeMint();
+    }
+
+    /**
+     * @dev Mint a new ERC721 token to the caller with some chance of failure.
+     *      NOTE: Production systems using random minting should leverage a commit-reveal scheme
+     *      to ensure that the random minting transaction cannot be reverted on random result.
+     */
+    function _maybeMint() internal {
+        _splitChanceRevert(); // randomly revert with 50% chance
+
         totalSupply++; // increment the total supply
         denomination.transferFrom(msg.sender, beneficiary, mintCost); // take payment for mint
         _mint(msg.sender, totalSupply); // mint the token, assigning the next tokenId
+            // TODO: Set token URI
+    }
+
+    /**
+     * @dev Randomly revert with 50% chance
+     */
+    function _splitChanceRevert() internal view {
+        uint64 random = CadenceArchUtils._revertibleRandom();
+        require(random % 2 == 0, "No mint for you!");
     }
 }
