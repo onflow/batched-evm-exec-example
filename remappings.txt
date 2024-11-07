@@ -3,4 +3,4 @@ ds-test/=solidity/lib/forge-std/lib/ds-test/src/
 erc4626-tests/=solidity/lib/openzeppelin-contracts/lib/erc4626-tests/
 forge-std/=solidity/lib/forge-std/src/
 openzeppelin-contracts/=solidity/lib/openzeppelin-contracts/
-onflow/random-coin-toss=solidity/lib/random-coin-toss
+flow-sol-utils=solidity/lib/flow-sol-utils/src/
