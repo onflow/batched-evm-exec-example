@@ -45,7 +45,7 @@ fun setup() {
         EVM.addressFromString(wflowAddress),
         UInt256(1_000_000_000_000_000_000),
         EVM.addressFromString(coaAddress),
-        "https://url.doman/uri.json"
+        "https://ipfs.filebase.io/ipfs/QmXbjTVEbhfzhbjfMtG8ZRhjDowd8oB7j7MXBWfYtzpcmY"
     ]
     // Encode constructor args as ABI and then as hex
     let argsBytecode = String.encodeHex(EVM.encodeABI(
