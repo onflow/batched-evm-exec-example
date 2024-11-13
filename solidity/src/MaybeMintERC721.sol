@@ -21,10 +21,14 @@ contract MaybeMintERC721 is ERC721, Ownable {
     error RandomRevert();
     error InsufficientAllowance(address denomination, address sender, uint256 needed);
 
-    constructor(string memory _name, string memory _symbol, address _erc20, uint256 _mintCost, address _beneficiary, string memory _uri)
-        ERC721(_name, _symbol)
-        Ownable(msg.sender)
-    {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address _erc20,
+        uint256 _mintCost,
+        address _beneficiary,
+        string memory _uri
+    ) ERC721(_name, _symbol) Ownable(msg.sender) {
         denomination = IERC20(_erc20);
         mintCost = _mintCost;
         beneficiary = _beneficiary;
