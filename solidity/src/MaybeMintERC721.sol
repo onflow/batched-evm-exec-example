@@ -16,17 +16,23 @@ contract MaybeMintERC721 is ERC721, Ownable {
     uint256 public mintCost;
     address public beneficiary;
     uint256 public totalSupply;
+    string private uri;
 
     error RandomRevert();
     error InsufficientAllowance(address denomination, address sender, uint256 needed);
 
-    constructor(string memory _name, string memory _symbol, address _erc20, uint256 _mintCost, address _beneficiary)
-        ERC721(_name, _symbol)
-        Ownable(msg.sender)
-    {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address _erc20,
+        uint256 _mintCost,
+        address _beneficiary,
+        string memory _uri
+    ) ERC721(_name, _symbol) Ownable(msg.sender) {
         denomination = IERC20(_erc20);
         mintCost = _mintCost;
         beneficiary = _beneficiary;
+        uri = _uri;
         totalSupply = 0;
     }
 
@@ -42,6 +48,13 @@ contract MaybeMintERC721 is ERC721, Ownable {
     function mint() external {
         // Randomly fail mint with 50% chance of reverting
         _maybeMint();
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        if (_ownerOf(tokenId) == address(0)) {
+            revert ERC721NonexistentToken(tokenId);
+        }
+        return uri;
     }
 
     /**

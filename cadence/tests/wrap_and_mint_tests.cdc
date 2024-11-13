@@ -44,7 +44,8 @@ fun setup() {
         "MAYBE",
         EVM.addressFromString(wflowAddress),
         UInt256(1_000_000_000_000_000_000),
-        EVM.addressFromString(coaAddress)
+        EVM.addressFromString(coaAddress),
+        "https://ipfs.filebase.io/ipfs/QmXbjTVEbhfzhbjfMtG8ZRhjDowd8oB7j7MXBWfYtzpcmY"
     ]
     // Encode constructor args as ABI and then as hex
     let argsBytecode = String.encodeHex(EVM.encodeABI(

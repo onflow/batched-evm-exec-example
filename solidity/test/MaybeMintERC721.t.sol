@@ -20,6 +20,7 @@ contract MaybeMintERC721Test is Test {
     uint256 internal mintCost = 1 ether;
     string internal name = "Maybe Mint ERC721 Test";
     string internal symbol = "MAYBE";
+    string internal uri = "https://url.doman/uri.json";
 
     // Test values
     address payable internal user = payable(address(101));
@@ -28,7 +29,7 @@ contract MaybeMintERC721Test is Test {
         vm.deal(user, 10 ether);
 
         erc20 = new ExampleERC20();
-        erc721 = new MaybeMintERC721(name, symbol, address(erc20), mintCost, beneficiary);
+        erc721 = new MaybeMintERC721(name, symbol, address(erc20), mintCost, beneficiary, uri);
     }
 
     function testMintRandomEvenSucceeds() public {
