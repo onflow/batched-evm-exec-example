@@ -19,7 +19,7 @@ transaction(wflowAddressHex: String) {
     let mintCost: UFix64
     let wflowAddress: EVM.EVMAddress
 
-    prepare(signer: auth(BorrowValue, StorageCapabilities, PublishCapability, UnpublishCapability) &Account) {
+    prepare(signer: auth(BorrowValue) &Account) {
         // Ensure a borrowable COA reference is available
         let storagePath = /storage/evm
         self.coa = signer.storage.borrow<auth(EVM.Call) &EVM.CadenceOwnedAccount>(from: storagePath)
