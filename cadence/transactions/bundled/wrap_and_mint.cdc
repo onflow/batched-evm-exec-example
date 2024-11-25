@@ -121,6 +121,10 @@ transaction(wflowAddressHex: String, maybeMintERC721AddressHex: String) {
 
         /* Attempt to mint ERC721 */
         //
+        // Convert the mintAmount from UFix64 to UInt256 (given 18 decimal precision on WFLOW contract)
+        let ufixAllowance = EVM.Balance(attoflow: 0)
+        ufixAllowance.setFLOW(flow: self.mintCost)
+        let convertedAllowance = ufixAllowance.inAttoFLOW() as! UInt256
         // Encode the mint() calldata
         let mintCalldata = EVM.encodeABIWithSignature("mint()", [])
         // Call the ERC721 contract, attempting to mint

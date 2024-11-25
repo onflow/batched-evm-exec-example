@@ -14,38 +14,20 @@ import "EVM"
 /// @param wflowAddressHex: The EVM address hex of the WFLOW contract as a String
 ///
 transaction(wflowAddressHex: String) {
-    
+
     let coa: auth(EVM.Call) &EVM.CadenceOwnedAccount
     let mintCost: UFix64
     let wflowAddress: EVM.EVMAddress
 
-    prepare(signer: auth(SaveValue, BorrowValue) &Account) {
-        /* COA configuration & assigment */
-        //
+    prepare(signer: auth(BorrowValue, StorageCapabilities, PublishCapability, UnpublishCapability) &Account) {
+        // Ensure a borrowable COA reference is available
         let storagePath = /storage/evm
-        // Assign the COA reference to the transaction's coa field
         self.coa = signer.storage.borrow<auth(EVM.Call) &EVM.CadenceOwnedAccount>(from: storagePath)
             ?? panic("A CadenceOwnedAccount (COA) Resource could not be found at path ".concat(storagePath.toString())
                 .concat(" - ensure the COA Resource is created and saved at this path to enable EVM interactions"))
-
-        /* Fund COA with cost of mint */
-        //
-        // Borrow authorized reference to signer's FlowToken Vault
-        let sourceVault = signer.storage.borrow<auth(FungibleToken.Withdraw) &FlowToken.Vault>(
-                from: /storage/flowTokenVault
-            ) ?? panic("The signer does not store a FlowToken Vault object at the path "
-                    .concat("/storage/flowTokenVault. ")
-                    .concat("The signer must initialize their account with this vault first!"))
-        // Withdraw from the signer's FlowToken Vault
+        // Assign the amount we'll deposit to WFLOW to cover the eventual ERC721 mint
         self.mintCost = 1.0
-        let fundingVault <- sourceVault.withdraw(amount: self.mintCost) as! @FlowToken.Vault
-        // Deposit the mint cost into the COA
-        self.coa.deposit(from: <-fundingVault)
-
-        /* Set the WFLOW contract address */
-        //
-        // View the cannonical WFLOW contract at:
-        // https://evm-testnet.flowscan.io/address/0xd3bF53DAC106A0290B0483EcBC89d40FcC961f3e
+        // Deserialize the WFLOW address
         self.wflowAddress = EVM.addressFromString(wflowAddressHex)
     }
 

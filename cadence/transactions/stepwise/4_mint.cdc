@@ -13,24 +13,18 @@ import "EVM"
 /// @param wflowAddressHex: The EVM address hex of the WFLOW contract as a String
 /// @param maybeMintERC721AddressHex: The EVM address hex of the ERC721 contract as a String
 ///
-transaction(wflowAddressHex: String, maybeMintERC721AddressHex: String) {
+transaction(maybeMintERC721AddressHex: String) {
 
     let coa: auth(EVM.Call) &EVM.CadenceOwnedAccount
     let erc721Address: EVM.EVMAddress
 
-    prepare(signer: auth(SaveValue, BorrowValue, IssueStorageCapabilityController, PublishCapability, UnpublishCapability) &Account) {
-        /* COA assigment */
-        //
+    prepare(signer: auth(BorrowValue, StorageCapabilities, PublishCapability, UnpublishCapability) &Account) {
+        // Ensure a borrowable COA reference is available
         let storagePath = /storage/evm
-
-        // Assign the COA reference to the transaction's coa field
         self.coa = signer.storage.borrow<auth(EVM.Call) &EVM.CadenceOwnedAccount>(from: storagePath)
             ?? panic("A CadenceOwnedAccount (COA) Resource could not be found at path ".concat(storagePath.toString())
                 .concat(" - ensure the COA Resource is created and saved at this path to enable EVM interactions"))
-
-        /* Assign the ERC721 EVM Address */
-        //
-        // Deserialize the provided ERC721 hex string to an EVM address
+        // Deserialize the ERC721 address
         self.erc721Address = EVM.addressFromString(maybeMintERC721AddressHex)
     }
 
