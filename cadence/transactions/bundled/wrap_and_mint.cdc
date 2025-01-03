@@ -102,10 +102,14 @@ transaction(wflowAddressHex: String, maybeMintERC721AddressHex: String) {
 
         /* Approve the ERC721 address for the mint amount */
         //
+        // Convert the mintAmount from UFix64 to UInt256 (given 18 decimal precision on WFLOW contract)
+        let ufixAllowance = EVM.Balance(attoflow: 0)
+        ufixAllowance.setFLOW(flow: self.mintCost)
+        let uintAllowance = UInt256(ufixAllowance.inAttoFLOW())
         // Encode calldata approve(address,uint) calldata, providing the ERC721 address & mint amount
         let approveCalldata = EVM.encodeABIWithSignature(
                 "approve(address,uint256)",
-                [self.erc721Address, UInt256(1_000_000_000_000_000_000)]
+                [self.erc721Address, uintAllowance]
             )
         // Call the WFLOW contract, approving the ERC721 address to move the mint amount
         let approveResult = self.coa.call(
@@ -137,4 +141,3 @@ transaction(wflowAddressHex: String, maybeMintERC721AddressHex: String) {
         )
     }
 }
-        
